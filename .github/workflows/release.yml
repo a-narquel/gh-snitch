@@ -5,8 +5,6 @@ on:
       - "v*"
 permissions:
   contents: write
-  id-token: write
-  attestations: write
 
 jobs:
   release:
@@ -15,5 +13,6 @@ jobs:
       - uses: actions/checkout@v6
       - uses: cli/gh-extension-precompile@v2
         with:
-          generate_attestations: true
+          # Attestations aren't available for private repos on personal accounts.
+          generate_attestations: false
           go_version_file: go.mod
