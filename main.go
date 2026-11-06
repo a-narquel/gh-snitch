@@ -1,24 +1,13 @@
+// gh-snitch is a gh extension that shows who contributed what to a repository.
 package main
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/a-narquel/gh-snitch/internal/gitlog"
+	"github.com/a-narquel/gh-snitch/internal/cli"
 )
 
 func main() {
-	commits, err := gitlog.Load(".")
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
-	}
-
-	//number of commits
-	fmt.Println(len(commits),"commits")
-	
-
-
-	
+	// os.Args[0] is the program's own path; the rest are the user's arguments.
+	os.Exit(cli.Run(os.Args[1:]))
 }

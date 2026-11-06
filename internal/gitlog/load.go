@@ -19,8 +19,18 @@ const logFormat = "--format=%x1e%H%x1f%aN%x1f%aE%x1f%aI%x1f%s"
 
 // Load reads the commit history of the git repository in repoDir.
 func Load(repoDir string) ([]Commit, error) {
-	cmd := exec.Command("git", "log", "--no-merges", "--numstat", logFormat)
-	cmd.Dir = repoDir
+	out, err := git(repoDir, "log", "--no-merges", "--numstat", logFormat)
+	if err != nil {
+		return nil, err
+	}
+	return parseLog(out)
+}
+
+// git runs a git subcommand inside dir and returns its standard output.
+// Every function in this package that talks to git goes through here.
+func git(dir string, args ...string) (string, error) {
+	cmd := exec.Command("git", args...)
+	cmd.Dir = dir
 
 	out, err := cmd.Output()
 	if err != nil {
@@ -29,10 +39,9 @@ func Load(repoDir string) ([]Commit, error) {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {
 			msg := strings.TrimSpace(string(exitErr.Stderr))
-			return nil, fmt.Errorf("running git log: %s", msg)
+			return "", fmt.Errorf("git %s: %s", args[0], msg)
 		}
-		return nil, fmt.Errorf("running git log: %w", err)
+		return "", fmt.Errorf("git %s: %w", args[0], err)
 	}
-
-	return parseLog(string(out))
+	return string(out), nil
 }

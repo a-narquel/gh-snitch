@@ -8,19 +8,10 @@ import (
 )
 
 const (
-	recordSep = "\x1e" // starts each commit (%x1e in logFormat)
-	fieldSep  = "\x1f" // separates header fields (%x1f in logFormat)
+	recordSep = "\x1e"
+	fieldSep  = "\x1f"
 )
 
-// parseLog turns the raw text of `git log` (in logFormat, with --numstat)
-// into commits. It does no I/O, so it can be tested with a hand-written string.
-//
-// Each record looks like:
-//
-//	<hash>␟<author>␟<email>␟<date>␟<subject>
-//	(blank line)
-//	<added>\t<deleted>\t<path>
-//	...
 func parseLog(raw string) ([]Commit, error) {
 	var commits []Commit
 
