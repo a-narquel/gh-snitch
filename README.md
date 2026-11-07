@@ -35,6 +35,7 @@ gh snitch --since 2w --exclude '*.proto' who
 | `files [--top N]` | hotspots: most-changed files and who owns them |
 | `reviews` | who reviews whom, time to first review and to merge, self-merges |
 | `awards` | the fun stuff |
+| `me [login]` | your all-time GitHub stats: contribution calendar, totals per year, streaks, languages, top repos (works outside a repo too) |
 | `since`, `until`, `exclude`, `include`, `bots`, `reset` | filters that persist in the prompt |
 
 Members are matched loosely: `show andre` finds "André Narquel". To merge one

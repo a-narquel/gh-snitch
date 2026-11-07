@@ -30,6 +30,7 @@ func init() {
 		{name: "files", usage: "[--top N]", help: "hotspots: the files that change the most", run: cmdFiles},
 		{name: "reviews", help: "who reviews whom, review and merge times", run: cmdReviews},
 		{name: "awards", help: "the fun stuff", run: cmdAwards},
+		{name: "me", usage: "[login]", help: "your all-time GitHub stats (or someone else's)", run: cmdMe},
 		{name: "since", usage: "<when>", help: "filter: only from then on (2w, 3d, 1m, 1y, 2026-10-01)", run: cmdSince},
 		{name: "until", usage: "<when>", help: "filter: only up to then", run: cmdUntil},
 		{name: "exclude", usage: "<glob>…", help: "filter: ignore matching files (*.proto, vendor/, go.sum)", run: cmdExclude},

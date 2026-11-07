@@ -56,6 +56,16 @@ func Run(args []string) int {
 
 	s := &Session{out: os.Stdout, now: time.Now}
 
+	// `gh snitch me` is about the user, not a repo: skip loading git history,
+	// so it also works outside a git repository.
+	if flags.Arg(0) == "me" {
+		if err := s.exec(flags.Args()); err != nil {
+			s.fail(err)
+			return 1
+		}
+		return 0
+	}
+
 	if interactive {
 		fmt.Printf(banner+"\n", Version)
 	}
