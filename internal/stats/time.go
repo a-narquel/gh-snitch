@@ -97,18 +97,3 @@ func Activity(d Data, g Granularity) Timeline {
 	}
 	return tl
 }
-
-// PunchCard counts commits by weekday (rows, Monday first) and 3-hour slot
-// of the day (columns: 00, 03, 06, … 21), in each author's own time zone.
-// If member is "", everyone's commits are counted.
-func PunchCard(d Data, member string) [7][8]int {
-	var card [7][8]int // arrays have a fixed size, so this is all zeros already
-	for _, c := range d.Commits {
-		if member != "" && c.Author != member {
-			continue
-		}
-		row := (int(c.When.Weekday()) + 6) % 7 // Monday = 0 … Sunday = 6
-		card[row][c.When.Hour()/3]++
-	}
-	return card
-}

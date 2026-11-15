@@ -20,28 +20,31 @@ go build && gh extension install .
 Run it inside any git repository:
 
 ```sh
-gh snitch                          # interactive prompt
-gh snitch who                      # one command, then exit
-gh snitch --since 2w --exclude '*.proto' who
+gh snitch
 ```
 
-| Command | What it shows |
+It opens a menu: move with the arrow keys, Enter to open, Esc to go back.
+
+| Menu | What it shows |
 |---|---|
-| `who [--all]` | leaderboard: commits, +/- lines, surviving code, active days, PRs, reviews, bus factor |
-| `show <member>` | one member's profile: streaks, weekly sparkline, where they work, commit types |
-| `compare <a> <b>` | two members side by side |
-| `activity [--daily\|--weekly\|--monthly] [member…]` | commits over time (git tags show as ▲) |
-| `when [member]` | punch card of commit days and hours |
-| `files [--top N]` | hotspots: most-changed files and who owns them |
-| `reviews` | who reviews whom, time to first review and to merge, self-merges |
-| `awards` | the fun stuff |
-| `me [login]` | your all-time GitHub stats: contribution calendar, totals per year, streaks, languages, top repos (works outside a repo too) |
-| `since`, `until`, `exclude`, `include`, `bots`, `reset` | filters that persist in the prompt |
+| Leaderboard | commits, +/- lines, surviving code, active days, PRs, reviews, bus factor |
+| Member | one person's profile: streaks, weekly sparkline, where they work, commit types |
+| Activity | commits over time for the top 5 (git tags show as ▲) |
+| Awards | the fun stuff |
+| Filters | pick a period (last week, month…) and files to ignore (`*.lock`, `dist/`) |
+
+Every screen also works straight from the shell, handy for scripts:
+
+```sh
+gh snitch who                       # or: show <member>, activity, awards
+gh snitch --since 2w --exclude '*.lock' who
+gh snitch me                        # your all-time GitHub stats (no repo needed)
+```
 
 Members are matched loosely: `show andre` finds "André Narquel". To merge one
 person's several emails into one member, add a [`.mailmap`](https://git-scm.com/docs/gitmailmap).
 
-Flags: `--since`, `--until`, `--exclude` (repeatable), `--no-github`, `--version`.
+Flags: `--since`, `--exclude` (repeatable), `--no-github`, `--version`.
 
 ## Layout
 

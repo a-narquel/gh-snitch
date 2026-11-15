@@ -1,5 +1,5 @@
 // Package cli is the user-facing part of snitch: loading the data with
-// spinners, the interactive prompt, and every command.
+// spinners, the interactive menu, and every screen.
 package cli
 
 import (
@@ -33,7 +33,7 @@ type Session struct {
 }
 
 // errNoCommits is returned by commands when the filters leave nothing to show.
-var errNoCommits = errors.New("no commits match the current filters (try 'reset')")
+var errNoCommits = errors.New("no commits match the current filters (change them in Filters)")
 
 // view is the data after applying the current filters. Every command starts here.
 func (s *Session) view() stats.Data {
@@ -131,7 +131,7 @@ func (s *Session) findMember(query string) (string, error) {
 			return "", fmt.Errorf("%q matches several people: %s", query, strings.Join(found, ", "))
 		}
 	}
-	return "", fmt.Errorf("no member called %q (see 'who')", query)
+	return "", fmt.Errorf("no member called %q (see 'gh snitch who')", query)
 }
 
 // period describes the time range of the data: "Sep 14 → Nov 6 (53 days)".
@@ -144,20 +144,7 @@ func period(d stats.Data) string {
 		render.Plural(stats.Days(first, last), "day"))
 }
 
-// prompt is "snitch> ", or "snitch [2w, -proto]> " when filters are on.
-func (s *Session) prompt() string {
-	p := render.Bold("snitch")
-	if labels := s.filter.Labels(); len(labels) > 0 {
-		p += " " + render.Yellow("["+strings.Join(labels, ", ")+"]")
-	}
-	return p + "> "
-}
-
-// ok and fail print the small ✓ / ✗ status lines.
-func (s *Session) ok(format string, args ...any) {
-	fmt.Fprintf(s.out, " %s %s\n", render.Green("✓"), fmt.Sprintf(format, args...))
-}
-
+// fail prints an error line.
 func (s *Session) fail(err error) {
 	fmt.Fprintf(s.out, " %s %v\n", render.Red("✗"), err)
 }

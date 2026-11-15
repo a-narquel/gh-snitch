@@ -11,13 +11,12 @@ import (
 	"github.com/a-narquel/gh-snitch/internal/gitlog"
 )
 
-// Filter narrows what every command looks at. It persists in the REPL until
-// `reset`, and shows up in the prompt: snitch [2w, -proto]>
+// Filter narrows what every screen looks at. Bots (dependabot[bot]…) are
+// always hidden.
 type Filter struct {
-	Since, Until           time.Time // zero = no limit
-	SinceLabel, UntilLabel string    // what the user typed, for the prompt
-	Exclude                []string  // glob patterns of paths to ignore
-	ShowBots               bool      // bots (dependabot[bot]…) are hidden unless this is on
+	Since      time.Time // zero = no limit
+	SinceLabel string    // what the user picked, e.g. "2w"
+	Exclude    []string  // glob patterns of paths to ignore
 }
 
 // IsBot reports whether a name belongs to a bot account.
@@ -27,36 +26,12 @@ func IsBot(name string) bool {
 
 // IsZero reports whether no filter is active.
 func (f Filter) IsZero() bool {
-	return f.Since.IsZero() && f.Until.IsZero() && len(f.Exclude) == 0
+	return f.Since.IsZero() && len(f.Exclude) == 0
 }
 
-// Labels are the short descriptions shown in the prompt.
-func (f Filter) Labels() []string {
-	var labels []string
-	if f.SinceLabel != "" {
-		labels = append(labels, f.SinceLabel)
-	}
-	if f.UntilLabel != "" {
-		labels = append(labels, "until "+f.UntilLabel)
-	}
-	for _, p := range f.Exclude {
-		labels = append(labels, "-"+strings.TrimPrefix(p, "*."))
-	}
-	if f.ShowBots {
-		labels = append(labels, "+bots")
-	}
-	return labels
-}
-
-// inWindow reports whether t is inside [Since, Until].
+// inWindow reports whether t is on or after Since.
 func (f Filter) inWindow(t time.Time) bool {
-	if !f.Since.IsZero() && t.Before(f.Since) {
-		return false
-	}
-	if !f.Until.IsZero() && t.After(f.Until) {
-		return false
-	}
-	return true
+	return f.Since.IsZero() || !t.Before(f.Since)
 }
 
 // Excludes reports whether a path matches one of the exclude patterns.
@@ -83,10 +58,7 @@ func (f Filter) Excludes(p string) bool {
 // Excluded files are removed from each commit; a commit left with no files
 // is dropped (it only touched excluded files).
 func (f Filter) Apply(d Data) Data {
-	if f.IsZero() && f.ShowBots {
-		return d
-	}
-	hide := func(name string) bool { return !f.ShowBots && IsBot(name) }
+	hide := IsBot
 
 	out := d // copies the struct; we then replace the slices below
 	out.Commits = nil

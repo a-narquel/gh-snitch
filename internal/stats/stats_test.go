@@ -118,11 +118,6 @@ func TestFilter(t *testing.T) {
 		}
 	}
 
-	f = Filter{ShowBots: true}
-	if got := len(f.Apply(d).Commits); got != 5 {
-		t.Errorf("with bots: %d commits, want 5", got)
-	}
-
 	// Apply must not change the original data.
 	if len(d.Commits[1].Files) != 2 {
 		t.Error("Apply modified the original commit's files")
@@ -162,22 +157,6 @@ func TestBusFactor(t *testing.T) {
 	}
 	if share < 83 || share > 84 { // 40 of 48 lines
 		t.Errorf("BusFactor share = %.1f, want about 83.3", share)
-	}
-}
-
-func TestReviews(t *testing.T) {
-	rs := Reviews(sample())
-	if got := rs.Matrix["joao"]["andre"]; got != 1 {
-		t.Errorf("joao reviewed andre %d times, want 1", got)
-	}
-	if rs.MedianFirstReview != time.Hour {
-		t.Errorf("MedianFirstReview = %v, want 1h", rs.MedianFirstReview)
-	}
-	if rs.MedianMerge != 3*time.Hour {
-		t.Errorf("MedianMerge = %v, want 3h", rs.MedianMerge)
-	}
-	if len(rs.SelfMerged) != 0 {
-		t.Errorf("SelfMerged = %v, want none (joao reviewed it)", rs.SelfMerged)
 	}
 }
 

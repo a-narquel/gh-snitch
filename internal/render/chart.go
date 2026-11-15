@@ -139,13 +139,5 @@ func LineChart(w io.Writer, series []Series, xLabels []string, markers []Marker)
 	}
 }
 
-// heat are the punch card intensity characters, from "nothing" to "a lot".
+// heat are the calendar intensity characters, from "nothing" to "a lot".
 var heat = []string{" ", "·", "░", "▒", "▓", "█"}
-
-// HeatLevels is how many non-empty intensity levels Heat has.
-const HeatLevels = 5
-
-// Heat returns the punch card character for level 0 (none) … HeatLevels (max).
-func Heat(level int) string {
-	return heat[min(max(level, 0), HeatLevels)]
-}
