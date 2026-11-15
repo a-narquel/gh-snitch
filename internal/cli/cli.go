@@ -12,7 +12,7 @@ import (
 )
 
 // Version is shown in the banner and by --version.
-const Version = "v0.1.1"
+const Version = "v0.2.1"
 
 // Run is the whole program. It returns the exit code (0 = success), which
 // main passes to os.Exit. Keeping os.Exit out of here makes Run testable.
